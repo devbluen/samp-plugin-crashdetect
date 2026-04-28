@@ -45,12 +45,6 @@ unsigned int TraceFlagsFromString(const std::string &s) {
 
 } // namespace
 
-void PrintStream(Printer printer, const std::stringstream &stream) {
-  stringutils::SplitString(stream.str(),
-                           '\n',
-                           PrintLine<Printer>(printer));
-}
-
 Options::Options():trace_flags_(0), trace_filter_(nullptr) {
 
   ConfigReader server_cfg("config.json");
@@ -64,8 +58,6 @@ Options::Options():trace_flags_(0), trace_filter_(nullptr) {
   log_path_ = server_cfg.GetValueWithDefault("crashdetect_log");
   log_time_format_ = server_cfg.GetValueWithDefault("logtimeformat", "[%H:%M:%S]");
   long_call_time_ = server_cfg.GetValueWithDefault("long_call_time", 5000U);
-
-  PrintStream("Long Call Time: %d", long_call_time_);
 }
 
 Options::~Options() {
