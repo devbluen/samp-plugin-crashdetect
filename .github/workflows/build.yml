@@ -23,9 +23,6 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
-      - name: Install CMake
-        uses: lukka/get-cmake@v3.31.0
-
       - name: Generate build files
         run: |
           mkdir build
