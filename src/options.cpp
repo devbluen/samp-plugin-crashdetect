@@ -52,15 +52,14 @@ Options::Options():trace_flags_(0), trace_filter_(nullptr) {
   trace_flags_ = TraceFlagsFromString(server_cfg.GetValueWithDefault("trace"));
   std::string trace_filter_pattern = server_cfg.GetValueWithDefault("trace_filter");
 
-  if (!trace_filter_pattern.empty()) {
+  if (!trace_filter_pattern.empty())
     trace_filter_ = new RegExp(trace_filter_pattern);
-  }
 
   log_path_ = server_cfg.GetValueWithDefault("crashdetect_log");
-  log_time_format_ =
-    server_cfg.GetValueWithDefault("logtimeformat", "[%H:%M:%S]");
-
+  log_time_format_ = server_cfg.GetValueWithDefault("logtimeformat", "[%H:%M:%S]");
   long_call_time_ = server_cfg.GetValueWithDefault("long_call_time", 5000U);
+
+  vlogprintf("Debug Long Call Time: %d", long_call_time_);
 }
 
 Options::~Options() {

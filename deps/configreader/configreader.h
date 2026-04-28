@@ -38,7 +38,7 @@ class ConfigReader {
   ConfigReader();
   ConfigReader(const std::string &filename);
   ConfigReader(std::istream &stream);
-
+  
   bool ReadFromFile(const std::string &filename);
   void ReadFromString(const std::string &config);
   void ReadFromStream(std::istream &stream);
@@ -72,8 +72,7 @@ void ConfigReader::GetValue(const std::string &name, T &value) const {
 }
 
 template<typename T>
-T ConfigReader::GetValueWithDefault(const std::string &name,
-                                    const T &defaultValue) const {
+T ConfigReader::GetValueWithDefault(const std::string &name, const T &defaultValue) const {
   option_map::const_iterator iterator = options_.find(name);
   if (iterator == options_.end()) {
     return defaultValue;
@@ -91,8 +90,7 @@ T ConfigReader::GetValueWithDefault(const std::string &name,
 }
 
 template<typename T>
-void ConfigReader::GetValues(const std::string &name,
-                             std::vector<T> &values) const {
+void ConfigReader::GetValues(const std::string &name, std::vector<T> &values) const {
   values = GetValuesWithDefault(name, values);
 }
 
