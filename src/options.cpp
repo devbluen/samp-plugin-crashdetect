@@ -45,15 +45,13 @@ unsigned int TraceFlagsFromString(const std::string &s) {
 
 } // namespace
 
-Options::Options():
-  trace_flags_(0),
-  trace_filter_(nullptr)
-{
-  ConfigReader server_cfg("server.cfg");
+Options::Options():trace_flags_(0), trace_filter_(nullptr) {
+
+  ConfigReader server_cfg("config.json");
 
   trace_flags_ = TraceFlagsFromString(server_cfg.GetValueWithDefault("trace"));
-  std::string trace_filter_pattern =
-    server_cfg.GetValueWithDefault("trace_filter");
+  std::string trace_filter_pattern = server_cfg.GetValueWithDefault("trace_filter");
+
   if (!trace_filter_pattern.empty()) {
     trace_filter_ = new RegExp(trace_filter_pattern);
   }

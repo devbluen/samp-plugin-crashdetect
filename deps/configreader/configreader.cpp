@@ -31,6 +31,9 @@
 #include <sstream>
 #include <string>
 
+#include "json.hpp"
+using json = nlohmann::json;
+
 #include "configreader.h"
 
 namespace {
@@ -71,14 +74,34 @@ ConfigReader::ConfigReader(std::istream &stream) {
 }
 
 bool ConfigReader::ReadFromFile(const std::string &filename) {
-  std::ifstream stream(filename.c_str());
+    std::ifstream stream(filename.c_str());
+    if (!stream.is_open()) {
+        return false;
+    }
 
-  if (!stream.is_open()) {
-    return false;
-  }
+    try {
+        json j;
+        stream >> j;
 
-  ReadFromStream(stream);
-  return true;
+        if (j.contains("crashdetect") && j["crashdetect"].is_object()) {
+            const auto& section = j["crashdetect"];
+            for (auto it = section.begin(); it != section.end(); ++it) {
+                if (it.value().is_primitive()) {
+                    if (it.value().is_string()) {
+                        options_[it.key()] = it.value().get<std::string>();
+                    } else {
+                        options_[it.key()] = it.value().dump();
+                    }
+                }
+            }
+            return true;
+        }
+        
+        return false;
+
+    } catch (const std::exception &e) {
+        return false;
+    }
 }
 
 void ConfigReader::ReadFromString(const std::string &config) {
