@@ -15,7 +15,7 @@ on:
 
 jobs:
   build-windows-release:
-    runs-on: windows-2019
+    runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,7 +30,7 @@ jobs:
         run: |
           mkdir build
           cd build
-          cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF .. -G "Visual Studio 16 2019" -A Win32
+          cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=OFF .. -G "Visual Studio 17 2022" -A Win32
           cmake --build . --config Release
 
       - name: Upload artifacts
