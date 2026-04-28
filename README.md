@@ -17,7 +17,7 @@ Installation
    [Building from source code](#building-from-source-code)).
 2. Extract and copy `crashdetect.so` or `crashdetect.dll` to `<sever>/plugins/`.
 3. Add `crashdetect` (Windows) or `crashdetect.so` (Linux) to the `plugins`
-   line of your server.cfg.
+   line of your config.json.
 
 Binary packages come with an include file (`crashdetect.inc`) that contains
 some helper functions that you may find useful. But **you don't have to
@@ -28,7 +28,7 @@ Usage
 
 Apart from installing the plugin you don't have to do anything further to
 start receiving errors reports. By default all errors will be saved in your
-`server_log.txt`, but this can be changed
+`log.txt`, but this can be changed
 (see [Configuration](#configuration)).
 
 For better debugging experience, make sure that you
@@ -45,13 +45,22 @@ CrashDetect on a production (live) server with many players.
 Configuration
 -------------
 
-CrashDetect reads settings from server.cfg, the server configuration file. This
+CrashDetect reads settings from config.json, the server configuration file. This
 is done during plugin loading, so if you change any settings you will probably
 need to restart your server.
 
 Available settings:
-
-* `trace <flags>`
+Config Example
+```json
+"crashdetect": {
+  "trace": "npf",
+  "trace_filter": "OnPlayerConnect",
+  "crashdetect_log": "logs/crashdetect.log",
+  "logtimeformat": "[%H:%M:%S]",
+  "long_call_time": 5000
+}
+```
+* `"trace": "<flags>"`
 
   Enables function call tracing.
 
@@ -65,26 +74,26 @@ Available settings:
   * `p` - trace public functions
   * `f` - trace normal functions (i.e. all non-public functions)
 
-  For example, `trace pn` will trace both public and native calls, and
-  `trace pfn` will trace all functions.
+  For example, `"trace:" "pn"` will trace both public and native calls, and
+  `"trace": "pfn"` will trace all functions.
 
-* `trace_filter <regexp>`
+* `"trace_filter": "<regexp>"`
 
   Filters `trace` output based on a regular expression.
 
   Examples:
 
-  * `trace_filter Player` - output functions whose name contains `Player`
-  * `trace_filter playerid=0` - show functions whose `playerid` parameter is 0
+  * `"trace_filter": "Player"` - output functions whose name contains `Player`
+  * `"trace_filter": "playerid=0"` - show functions whose `playerid` parameter is 0
 
-* `crashdetect_log <filename>`
+* `"crashdetect_log": "<filename>"`
 
   Use a custom log file for output.
 
   By default all diagnostic information is printed to the server log. This
   option lets you redirect output to a separate file.
 
-* `long_call_time <us>`
+* `"long_call_time": <us>`
 
   How long a top-level callback call should last before CrashDetect prints a
   warning. This can be set very high (for example `1000000`) to only detect
@@ -158,7 +167,7 @@ for general flags and `0xFE` for long call time values:
 The flags are:
 
 * `1` - CrashDetect is present (read only).
-* `2` - long_call_time checks enabled (write ignored when `server.cfg` has
+* `2` - long_call_time checks enabled (write ignored when `config.json` has
   `long_call_time 0`).
 * `4` - long_call_time reset to default time (write `1` only).
 * `8` - long_call_time restart check from now (write `1` only).
@@ -240,11 +249,3 @@ License
 -------
 
 Licensed under the 2-clause BSD license. See [LICENSE.txt](LICENSE.txt).
-
-[github]: https://github.com/Zeex/samp-plugin-crashdetect
-[version]: http://badge.fury.io/gh/Zeex%2Fsamp-plugin-crashdetect
-[version_badge]: https://badge.fury.io/gh/Zeex%2Fsamp-plugin-crashdetect.svg
-[build]: https://ci.appveyor.com/project/Zeex/samp-plugin-crashdetect/branch/master
-[build_status]: https://ci.appveyor.com/api/projects/status/nay4h3t5cu6469ic/branch/master?svg=true
-[download]: https://github.com/Zeex/samp-plugin-crashdetect/releases
-[debug_info]: https://github.com/Zeex/samp-plugin-crashdetect/wiki/Compiling-scripts-with-debug-info
