@@ -59,7 +59,7 @@ Options::Options():trace_flags_(0), trace_filter_(nullptr) {
   log_time_format_ = server_cfg.GetValueWithDefault("logtimeformat", "[%H:%M:%S]");
   long_call_time_ = server_cfg.GetValueWithDefault("long_call_time", 5000U);
 
-  vlogprintf("Debug Long Call Time: %d", long_call_time_);
+  LogDebugPrint("Long Call Time: %d", long_call_time_);
 }
 
 Options::~Options() {
