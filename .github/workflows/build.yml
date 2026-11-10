@@ -4,13 +4,11 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - "*"
-      - "*/*"
       - "**"
+    tags:
+      - "v*"
   pull_request:
     branches:
-      - "*"
-      - "*/*"
       - "**"
 
 jobs:
@@ -35,6 +33,7 @@ jobs:
         with:
           name: crashdetect-win-release
           path: build/Release/crashdetect.dll
+          if-no-files-found: error
 
   build-linux-release:
     runs-on: ubuntu-latest
@@ -57,3 +56,30 @@ jobs:
         with:
           name: crashdetect-linux-release
           path: docker/build/crashdetect.so
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [build-windows-release, build-linux-release]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Package release assets
+        run: |
+          mkdir dist
+          (cd artifacts/crashdetect-win-release && zip -j ../../dist/crashdetect-win-release.zip crashdetect.dll)
+          (cd artifacts/crashdetect-linux-release && zip -j ../../dist/crashdetect-linux-release.zip crashdetect.so)
+          ls -l dist
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*.zip
+          generate_release_notes: true
+          fail_on_unmatched_files: true
